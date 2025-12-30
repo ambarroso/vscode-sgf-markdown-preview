@@ -1,0 +1,10 @@
+# SGF Rendering Test
+
+Here is a sample SGF game:
+
+```sgf
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Japanese]SZ[19]KM[0.00]
+PW[White]PB[Black]
+;B[pd];W[dd];B[pp];W[dp];B[fq];W[cn];B[jp])
+```
