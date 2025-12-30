@@ -1,0 +1,41 @@
+{
+    "name": "sgf-markdown-preview",
+    "displayName": "SGF Markdown Preview",
+    "description": "Renders SGF code blocks as Go boards in Markdown preview",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.96.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [],
+    "main": "./out/extension.js",
+    "contributes": {
+        "markdown.markdownItPlugins": true,
+        "markdown.previewScripts": [
+            "./media/wgo.min.js",
+            "./media/wgo.player.min.js",
+            "./media/main.js"
+        ],
+        "markdown.previewStyles": [
+            "./media/wgo.player.css"
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.96.0",
+        "@types/node": "20.x",
+        "@types/markdown-it": "^12.2.3",
+        "typescript": "^5.3.3",
+        "eslint": "^8.56.0"
+    },
+    "dependencies": {}
+}
