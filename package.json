@@ -3,6 +3,12 @@
     "displayName": "SGF Markdown Preview",
     "description": "Renders SGF code blocks as Go boards in Markdown preview",
     "version": "0.0.1",
+    "publisher": "AndreBarroso",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ambarroso/vscode-sgf-markdown-preview.git"
+    },
     "engines": {
         "vscode": "^1.96.0"
     },
