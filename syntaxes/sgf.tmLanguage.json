@@ -1,0 +1,47 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "Smart Game Format",
+    "scopeName": "source.sgf",
+    "patterns": [
+        {
+            "include": "#nodes"
+        }
+    ],
+    "repository": {
+        "nodes": {
+            "patterns": [
+                {
+                    "match": "\\(\\;",
+                    "name": "keyword.control.sgf"
+                },
+                {
+                    "match": "\\)",
+                    "name": "keyword.control.sgf"
+                },
+                {
+                    "match": "\\;",
+                    "name": "keyword.control.sgf"
+                },
+                {
+                    "match": "[A-Z]+",
+                    "name": "entity.name.function.sgf"
+                },
+                {
+                    "begin": "\\[",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.sgf"
+                        }
+                    },
+                    "end": "\\]",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.sgf"
+                        }
+                    },
+                    "name": "string.quoted.other.sgf"
+                }
+            ]
+        }
+    }
+}

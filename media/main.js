@@ -13,20 +13,32 @@
                 continue;
             }
             const sgfContent = decodeURIComponent(element.getAttribute('data-sgf') || '');
+            const showControls = element.getAttribute('data-show-controls') === 'true';
+            const showCoordinates = element.getAttribute('data-show-coordinates') === 'true';
 
             element.innerHTML = ""; // Clear
 
             try {
-                // @ts-ignore
-                new WGo.BasicPlayer(element, {
-                    sgf: sgfContent,
-                    layout: {
+                const config = {
+                    sgf: sgfContent
+                };
+                
+                if (!showControls) {
+                    config.layout = {
                         top: [],
                         right: [],
                         left: [],
                         bottom: []
-                    } // Minimal layout or default
-                });
+                    };
+                }
+
+                // @ts-ignore
+                const player = new WGo.BasicPlayer(element, config);
+                
+                if (showCoordinates) {
+                    player.setCoordinates(true);
+                }
+                
                 element.setAttribute('data-rendered', 'true');
             } catch (e) {
                 console.error(e);

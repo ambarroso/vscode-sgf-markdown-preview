@@ -1,0 +1,30 @@
+{
+  "scopeName": "markdown.sgf.fenced",
+  "injectionSelector": "L:text.html.markdown",
+  "patterns": [
+    {
+      "include": "#fenced-sgf"
+    }
+  ],
+  "repository": {
+    "fenced-sgf": {
+      "name": "markup.fenced_code.block.markdown",
+      "contentName": "source.sgf",
+      "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(sgf))(.*)$",
+      "beginCaptures": {
+        "3": { "name": "punctuation.definition.markdown" },
+        "4": { "name": "fenced_code.block.language.markdown" },
+        "5": { "name": "fenced_code.block.language.attributes.markdown" }
+      },
+      "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+      "endCaptures": {
+        "3": { "name": "punctuation.definition.markdown" }
+      },
+      "patterns": [
+        {
+          "include": "source.sgf"
+        }
+      ]
+    }
+  }
+}

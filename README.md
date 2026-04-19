@@ -6,6 +6,8 @@
 
 - **Interactive Go Boards**: Renders SGF content as playable boards.
 - **Markdown Integration**: Seamlessly integrates with standard Markdown previews using the `sgf` language identifier.
+- **Syntax Highlighting**: Provides standard VS Code TextMate syntax highlighting for `.sgf` files mapping properties and parameters.
+- **Snippets**: Auto-generates Markdown SGF block structure when you type `sgf` and hit tab.
 - **Playback Controls**: Navigate through moves using the built-in player controls.
 
 ## Usage
@@ -32,13 +34,23 @@ To render a Go board, simply create a code block in your Markdown file using the
 
 ## Extension Settings
 
-Currently, this extension does not contribute any specific settings. It uses the default WGo.js player configuration.
+Currently, this extension contributes the following settings:
+* `sgf-markdown-preview.boardMaxWidth`: Maximum width of the Go board in the Markdown preview (default: `600px`).
+* `sgf-markdown-preview.showPlayerControls`: Show navigation controls under the Go board (default: `false`).
+* `sgf-markdown-preview.showCoordinates`: Show grid coordinates around the Go board (default: `false`).
 
 ## Known Issues
 
 - Large SGF files may impact preview performance.
 
 ## Release Notes
+
+### 0.0.2
+
+- Added Syntax Highlighting inside editor via `source.sgf` grammar
+- Added VS Code customizable settings for board layout (`boardMaxWidth`, `showPlayerControls`, `showCoordinates`)
+- Added quick markdown snippet (`sgf`) for creating new SGF fences
+- Explicit injection of text highlighting into `.md` preview windows to fix standard highlighting bugs
 
 ### 0.0.1
 

@@ -2,7 +2,7 @@
     "name": "sgf-markdown-preview",
     "displayName": "SGF Markdown Preview",
     "description": "Renders SGF code blocks as Go boards in Markdown preview",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "AndreBarroso",
     "license": "MIT",
     "repository": {
@@ -18,6 +18,61 @@
     "activationEvents": [],
     "main": "./out/extension.js",
     "contributes": {
+        "configuration": {
+            "title": "SGF Markdown Preview",
+            "properties": {
+                "sgf-markdown-preview.boardMaxWidth": {
+                    "type": "string",
+                    "default": "600px",
+                    "description": "Maximum width of the Go board in the Markdown preview."
+                },
+                "sgf-markdown-preview.showPlayerControls": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Show navigation controls under the Go board."
+                },
+                "sgf-markdown-preview.showCoordinates": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Show grid coordinates around the Go board."
+                }
+            }
+        },
+        "languages": [
+            {
+                "id": "sgf",
+                "aliases": [
+                    "SGF",
+                    "sgf"
+                ],
+                "extensions": [
+                    ".sgf"
+                ]
+            }
+        ],
+        "grammars": [
+            {
+                "language": "sgf",
+                "scopeName": "source.sgf",
+                "path": "./syntaxes/sgf.tmLanguage.json"
+            },
+            {
+                "scopeName": "markdown.sgf.fenced",
+                "path": "./syntaxes/markdown-sgf.tmLanguage.json",
+                "injectTo": [
+                    "text.html.markdown"
+                ],
+                "embeddedLanguages": {
+                    "meta.embedded.block.sgf": "sgf"
+                }
+            }
+        ],
+        "snippets": [
+            {
+                "language": "markdown",
+                "path": "./snippets/markdown.json"
+            }
+        ],
         "markdown.markdownItPlugins": true,
         "markdown.previewScripts": [
             "./media/wgo.min.js",
