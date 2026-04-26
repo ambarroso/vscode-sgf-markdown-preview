@@ -2,7 +2,7 @@
     "name": "sgf-markdown-preview",
     "displayName": "SGF Markdown Preview",
     "description": "Renders SGF code blocks as Go boards in Markdown preview",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "AndreBarroso",
     "license": "MIT",
     "repository": {
@@ -15,9 +15,27 @@
     "categories": [
         "Other"
     ],
-    "activationEvents": [],
+    "activationEvents": [
+        "onLanguage:markdown",
+        "onLanguage:sgf"
+    ],
     "main": "./out/extension.js",
     "contributes": {
+        "commands": [
+            {
+                "command": "sgf-markdown-preview.openInteractiveBoard",
+                "title": "SGF: Open Interactive Board"
+            },
+            {
+                "command": "sgf-markdown-preview.showMoveInfo",
+                "title": "Show SGF Move Info",
+                "enablement": "false"
+            },
+            {
+                "command": "sgf-markdown-preview.formatMarkdownBlocks",
+                "title": "Format SGF Markdown Blocks"
+            }
+        ],
         "configuration": {
             "title": "SGF Markdown Preview",
             "properties": {
@@ -73,6 +91,15 @@
                 "path": "./snippets/markdown.json"
             }
         ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "sgf-markdown-preview.openInteractiveBoard",
+                    "when": "editorLangId == markdown || editorLangId == sgf",
+                    "group": "navigation"
+                }
+            ]
+        },
         "markdown.markdownItPlugins": true,
         "markdown.previewScripts": [
             "./media/wgo.min.js",
@@ -80,7 +107,8 @@
             "./media/main.js"
         ],
         "markdown.previewStyles": [
-            "./media/wgo.player.css"
+            "./media/wgo.player.css",
+            "./media/custom.css"
         ]
     },
     "scripts": {

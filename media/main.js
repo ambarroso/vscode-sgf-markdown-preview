@@ -15,6 +15,7 @@
             const sgfContent = decodeURIComponent(element.getAttribute('data-sgf') || '');
             const showControls = element.getAttribute('data-show-controls') === 'true';
             const showCoordinates = element.getAttribute('data-show-coordinates') === 'true';
+            const showNumbers = element.getAttribute('data-show-numbers') === 'true';
 
             element.innerHTML = ""; // Clear
 
@@ -37,6 +38,34 @@
                 
                 if (showCoordinates) {
                     player.setCoordinates(true);
+                }
+                
+                // Start with the final position by default
+                if (player.last) {
+                    player.last();
+                }
+
+                if (showNumbers) {
+                    let moveNumbers = [];
+                    player.addEventListener("update", function(e) {
+                        if (moveNumbers.length > 0) {
+                            player.board.removeObject(moveNumbers);
+                            moveNumbers = [];
+                        }
+                        if (e.path && e.path.m > 0) {
+                            let node = player.kifuReader.node;
+                            let count = e.path.m;
+                            while (node && count > 0) {
+                                if (node.move && !node.move.pass) {
+                                    const textColor = node.move.c === WGo.B ? "#ffffff" : "#000000";
+                                    moveNumbers.push({ x: node.move.x, y: node.move.y, text: count.toString(), type: "LB", c: textColor });
+                                }
+                                node = node.parent;
+                                count--;
+                            }
+                            player.board.addObject(moveNumbers);
+                        }
+                    });
                 }
                 
                 element.setAttribute('data-rendered', 'true');

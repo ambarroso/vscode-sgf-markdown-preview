@@ -5,14 +5,22 @@
 ## Features
 
 - **Interactive Go Boards**: Renders SGF content as playable boards.
+- **Interactive Webview Editor**: Right-click to open a dedicated editor with real-time two-way synchronization of SGF edits back to your Markdown file.
 - **Markdown Integration**: Seamlessly integrates with standard Markdown previews using the `sgf` language identifier.
+- **Move Numbering**: Toggle move numbers directly on the board by adding `showNumbers` to your SGF block info.
 - **Syntax Highlighting**: Provides standard VS Code TextMate syntax highlighting for `.sgf` files mapping properties and parameters.
 - **Snippets**: Auto-generates Markdown SGF block structure when you type `sgf` and hit tab.
-- **Playback Controls**: Navigate through moves using the built-in player controls.
+- **Playback Controls**: Navigate through moves using the built-in player controls. Boards now automatically fast-forward to the end of the game upon rendering.
 
 ## Usage
 
 To render a Go board, simply create a code block in your Markdown file using the `sgf` language identifier and paste your SGF content inside.
+
+To display move numbers on the board stones, add the `showNumbers` flag to your block:
+
+    ```sgf showNumbers
+
+You can also right-click inside a `.md` or `.sgf` file and select **SGF: Open Interactive Board** to open a dedicated Editor for your SGF code blocks. The Interactive Editor starts in Edit Mode by default, automatically syncing newly placed stones back to your file.
 
 ### Example
 
@@ -44,6 +52,15 @@ Currently, this extension contributes the following settings:
 - Large SGF files may impact preview performance.
 
 ## Release Notes
+
+### 0.0.3
+
+- Added an **Interactive SGF Editor** (Webview Panel) for real-time, two-way editing and synchronization.
+- Added context menu support for **SGF: Open Interactive Board** via right-click.
+- Fixed an issue where Player Control buttons appeared tiny in the Markdown Preview due to VS Code stylesheet conflicts.
+- Added the ability to toggle move numbering on stones via the `showNumbers` flag (e.g., ````sgf showNumbers`).
+- Boards now automatically fast-forward to the final position when rendered.
+- The Interactive Editor now activates Edit Mode by default.
 
 ### 0.0.2
 
