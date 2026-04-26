@@ -5,11 +5,13 @@ export class SgfEditorPanel {
     public static currentPanel: SgfEditorPanel | undefined;
     private readonly _panel: vscode.WebviewPanel;
     private readonly _extensionUri: vscode.Uri;
+    private _documentUri: vscode.Uri;
     private _disposables: vscode.Disposable[] = [];
 
-    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, documentUri: vscode.Uri) {
         this._panel = panel;
         this._extensionUri = extensionUri;
+        this._documentUri = documentUri;
 
         // Set the webview's initial html content
         this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
@@ -32,7 +34,7 @@ export class SgfEditorPanel {
         );
     }
 
-    public static createOrShow(extensionUri: vscode.Uri, sgfContent: string, lineStart: number, showCoordinates: boolean, showNumbers: boolean = false) {
+    public static createOrShow(extensionUri: vscode.Uri, documentUri: vscode.Uri, sgfContent: string, lineStart: number, showCoordinates: boolean, showNumbers: boolean = false) {
         const column = vscode.window.activeTextEditor
             ? vscode.ViewColumn.Beside
             : vscode.ViewColumn.One;
@@ -41,6 +43,8 @@ export class SgfEditorPanel {
         if (SgfEditorPanel.currentPanel) {
             SgfEditorPanel.currentPanel._panel.reveal(column);
             SgfEditorPanel.currentPanel.initEditor(sgfContent, lineStart, showCoordinates, showNumbers);
+            // Ensure documentUri is updated if the same panel is re-used for a different doc (though our implementation assumes one panel per extension)
+            SgfEditorPanel.currentPanel._documentUri = documentUri;
             return;
         }
 
@@ -56,7 +60,7 @@ export class SgfEditorPanel {
             }
         );
 
-        SgfEditorPanel.currentPanel = new SgfEditorPanel(panel, extensionUri);
+        SgfEditorPanel.currentPanel = new SgfEditorPanel(panel, extensionUri, documentUri);
         
         // Wait a brief moment for the webview to load its HTML and scripts before sending the init message
         setTimeout(() => {
@@ -75,32 +79,44 @@ export class SgfEditorPanel {
     }
 
     private async _handleUpdateSgf(newSgf: string, lineStart: number) {
-        let doc = vscode.window.activeTextEditor?.document;
-        
-        if (!doc || doc.languageId !== 'markdown') {
-            doc = vscode.workspace.textDocuments.find(d => d.languageId === 'markdown');
+        let doc: vscode.TextDocument | undefined;
+        try {
+            doc = await vscode.workspace.openTextDocument(this._documentUri);
+        } catch (e) {
+            console.error("Failed to open document for SGF update", e);
         }
 
         if (!doc) {
-            vscode.window.showErrorMessage("Could not find the original markdown document to update.");
+            vscode.window.showErrorMessage("Could not find the original document to update. It might have been closed or moved.");
             return;
         }
 
-        const startPos = new vscode.Position(lineStart + 1, 0);
-        
-        // Find the end of the block
-        let endLine = lineStart + 1;
-        while (endLine < doc.lineCount) {
-            if (doc.lineAt(endLine).text.trim() === '```') {
-                break;
+        const edit = new vscode.WorkspaceEdit();
+
+        if (doc.languageId === 'sgf') {
+            // Replace the entire file content for SGF files
+            const fullRange = new vscode.Range(
+                doc.positionAt(0),
+                doc.positionAt(doc.getText().length)
+            );
+            edit.replace(doc.uri, fullRange, newSgf);
+        } else {
+            // Assume Markdown, find the fenced block
+            const startPos = new vscode.Position(lineStart + 1, 0);
+            
+            // Find the end of the block
+            let endLine = lineStart + 1;
+            while (endLine < doc.lineCount) {
+                if (doc.lineAt(endLine).text.trim() === '```') {
+                    break;
+                }
+                endLine++;
             }
-            endLine++;
+
+            const range = new vscode.Range(startPos, new vscode.Position(endLine, 0));
+            edit.replace(doc.uri, range, newSgf + '\n');
         }
 
-        const edit = new vscode.WorkspaceEdit();
-        const range = new vscode.Range(startPos, new vscode.Position(endLine, 0));
-        
-        edit.replace(doc.uri, range, newSgf + '\n');
         await vscode.workspace.applyEdit(edit);
     }
 

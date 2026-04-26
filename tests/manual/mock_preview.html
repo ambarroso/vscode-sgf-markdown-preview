@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SGF Markdown Preview Mock</title>
+    <link rel="stylesheet" href="./media/wgo.player.css">
+    <link rel="stylesheet" href="./media/custom.css">
+    <script src="./media/wgo.min.js"></script>
+    <script src="./media/wgo.player.min.js"></script>
+    <style>
+        body {
+            background-color: #1e1e1e; /* VS Code dark mode */
+            color: #d4d4d4;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 40px;
+        }
+        .container {
+            display: flex;
+            gap: 40px;
+        }
+        .preview-pane {
+            flex: 1;
+            background: #1e1e1e;
+            border-right: 1px solid #444;
+            padding-right: 20px;
+        }
+        .editor-pane {
+            flex: 1;
+            padding-left: 20px;
+        }
+        h2 {
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            font-weight: 300;
+        }
+        .vscode-button {
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="preview-pane">
+            <h2>Standard Markdown Preview</h2>
+            <div class="sgf-render" data-sgf="%28%3BGM%5B1%5DFF%5B4%5DCA%5BUTF-8%5DPW%5BWhite%5DPB%5BBlack%5DSZ%5B19%5DAP%5BWGo.js%3A2%5D%28%3BB%5Bpd%5D%3BW%5Bdd%5D%29%28%3BB%5Bgf%5D%3BW%5Bih%5D%3BB%5Bkk%5D%3BW%5Bhk%5D%28%3BB%5Bhm%5D%29%28%3BB%5Bmk%5D%3BW%5Bll%5D%29%29%29" data-line-start="31" data-max-width="600px" data-show-controls="true" data-show-coordinates="true" data-show-numbers="true" style="width: 100%; max-width: 600px; aspect-ratio: 1;"></div>
+        </div>
+        <div class="editor-pane">
+            <h2>Interactive SGF Editor</h2>
+            <p style="color: #999;">Right-click code block -> <b>SGF: Open Interactive Board</b></p>
+            <div id="board-container" style="width: 100%; max-width: 600px; aspect-ratio: 1;"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Mock the VS Code environment variables
+        window.acquireVsCodeApi = function() {
+            return {
+                postMessage: function(msg) { console.log("PostMessage:", msg); }
+            };
+        };
+    </script>
+    <script src="./media/main.js"></script>
+    <script>
+        // Mock the Interactive Editor initialization
+        const config = {
+            sgf: "(;GM[1]FF[4]CA[UTF-8]PW[White]PB[Black]AP[WGo.js:2]SZ[19](;B[pd];W[dd])(;B[gf];W[ih];B[kk];W[hk](;B[hm])(;B[mk];W[ll])))",
+            layout: {
+                top: ["Control"],
+                right: [],
+                left: [],
+                bottom: ["CommentBox"]
+            }
+        };
+        const editorContainer = document.getElementById('board-container');
+        const editorPlayer = new WGo.BasicPlayer(editorContainer, config);
+        editorPlayer.setCoordinates(true);
+        if (editorPlayer.last) editorPlayer.last();
+        if (WGo.Player && WGo.Player.Editable) {
+            editorPlayer._editable = new WGo.Player.Editable(editorPlayer, editorPlayer.board);
+            editorPlayer._editable.set(true);
+        }
+        let moveNumbers = [];
+        editorPlayer.addEventListener("update", function(e) {
+            if (moveNumbers.length > 0) {
+                editorPlayer.board.removeObject(moveNumbers);
+                moveNumbers = [];
+            }
+            if (editorPlayer.kifuReader && editorPlayer.kifuReader.path && editorPlayer.kifuReader.path.m > 0) {
+                let node = editorPlayer.kifuReader.node;
+                let count = editorPlayer.kifuReader.path.m;
+                while (node && count > 0) {
+                    if (node.move && !node.move.pass) {
+                        const textColor = node.move.c === WGo.B ? "#ffffff" : "#000000";
+                        moveNumbers.push({ x: node.move.x, y: node.move.y, text: count.toString(), type: "LB", c: textColor });
+                    }
+                    node = node.parent;
+                    count--;
+                }
+                editorPlayer.board.addObject(moveNumbers);
+            }
+        });
+    </script>
+</body>
+</html>

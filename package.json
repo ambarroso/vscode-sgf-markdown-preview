@@ -2,7 +2,7 @@
     "name": "sgf-markdown-preview",
     "displayName": "SGF Markdown Preview",
     "description": "Renders SGF code blocks as Go boards in Markdown preview",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "AndreBarroso",
     "license": "MIT",
     "repository": {
@@ -132,5 +132,8 @@
         "markdown-it": "^14.1.0",
         "mocha": "^11.7.5",
         "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "vscode-test": "^1.6.1"
     }
 }

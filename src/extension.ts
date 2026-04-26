@@ -96,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         // Open the Webview Panel
         const { SgfEditorPanel } = require('./sgf-editor-panel');
-        SgfEditorPanel.createOrShow(context.extensionUri, sgfContent, lineStart, showCoordinates, showNumbers);
+        SgfEditorPanel.createOrShow(context.extensionUri, doc.uri, sgfContent, lineStart, showCoordinates, showNumbers);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand('sgf-markdown-preview.showMoveInfo', (info: string) => {
