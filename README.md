@@ -53,6 +53,13 @@ Currently, this extension contributes the following settings:
 
 ## Release Notes
 
+### 0.0.4
+
+- Fixed an issue where the Interactive Board would inconsistently fail to update the Markdown file when the Webview had focus.
+- Improved synchronization reliability by explicitly tracking source document URIs.
+- Added support for direct synchronization back to `.sgf` files.
+- Organized the repository by moving manual test scripts to the `tests/manual/` directory.
+
 ### 0.0.3
 
 - Added an **Interactive SGF Editor** (Webview Panel) for real-time, two-way editing and synchronization.
